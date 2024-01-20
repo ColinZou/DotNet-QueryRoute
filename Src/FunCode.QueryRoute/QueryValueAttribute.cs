@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace FunCode.QueryRoute
 {
-    public class RouteParamAttribute : FromQueryAttribute, IParameterModelConvention
+    public class QueryValueAttribute : FromQueryAttribute, IParameterModelConvention
     {
-        public RouteParamAttribute(string value)
+        public QueryValueAttribute(string value)
         {
             Value = value;
         }
@@ -23,7 +23,7 @@ namespace FunCode.QueryRoute
                     .Selectors
                     .Last()
                     .ActionConstraints
-                    .Add(new RouteParamActionConstraint(paramName, Value));
+                    .Add(new QueryValueActionConstraint(paramName, Value));
             }
         }
     }

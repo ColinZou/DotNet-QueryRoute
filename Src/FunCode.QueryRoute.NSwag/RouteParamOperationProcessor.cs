@@ -5,20 +5,22 @@ namespace FunCode.QueryRoute.NSwag
 {
     public class RouteParamOperationProcessor : IOperationProcessor
     {
-        private static readonly Type _attrType = typeof(RouteParamAttribute);
+        private static readonly Type _attrType = typeof(QueryValueAttribute);
+        private static readonly char _questioMark = '?';
+        private static readonly char _andSign = '&';
 
         bool IOperationProcessor.Process(OperationProcessorContext context)
         {
             // getting all parameters with _attrType from method info
-            List<KeyValuePair<string, RouteParamAttribute>> parameters = context
+            List<KeyValuePair<string, string>> parameters = context
                 .MethodInfo
                 .GetParameters()
                 .Where(item => item.GetCustomAttributes(_attrType, false).Any())
                 .Select(item =>
                 {
-                    RouteParamAttribute? attr =
-                        item.GetCustomAttributes(_attrType, false).First() as RouteParamAttribute;
-                    return KeyValuePair.Create(item.Name!, attr!);
+                    QueryValueAttribute? attr =
+                        item.GetCustomAttributes(_attrType, false).First() as QueryValueAttribute;
+                    return KeyValuePair.Create(item.Name!, attr!.Value);
                 })
                 .ToList();
             if (parameters.Count == 0)
@@ -37,9 +39,11 @@ namespace FunCode.QueryRoute.NSwag
                 .Where(item => paramNameList.Contains(item.Name))
                 .ToList()
                 .ForEach(item => apiParams.Remove(item));
+            bool pathHasQuestionMark = context.OperationDescription.Path.Contains(_questioMark);
             // add query string to path
             context.OperationDescription.Path +=
-                "?" + string.Join("&", parameters.Select(item => $"{item.Key}={item.Value.Value}"));
+                (pathHasQuestionMark ? _andSign : _questioMark)
+                + string.Join(_andSign, parameters.Select(item => $"{item.Key}={item.Value}"));
             return true;
         }
     }

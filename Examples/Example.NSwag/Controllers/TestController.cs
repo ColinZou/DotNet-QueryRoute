@@ -1,22 +1,22 @@
 using FunCode.QueryRoute;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Example.NSwag
+namespace Example.NSwag.Controllers
 {
     [ApiController]
     [Route("tests")]
     public class TestController : ControllerBase
     {
         [HttpGet("")]
-        public string DownloadAction([RouteParam("download")] string action)
+        public string DownloadAction([QueryValue("download")] string action)
         {
-            return $"action={action}\n";
+            return $"action={action}";
         }
 
         [HttpGet("")]
-        public string PingAction([RouteParam("ping")] string action)
+        public string PingAction([QueryValue("ping")] string action)
         {
-            return $"action={action}\n";
+            return $"action={action}";
         }
     }
 }

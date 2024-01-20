@@ -4,13 +4,13 @@ using Microsoft.Extensions.Primitives;
 
 namespace FunCode.QueryRoute
 {
-    public class RouteParamActionConstraint : IActionConstraint
+    internal class QueryValueActionConstraint : IActionConstraint
     {
         private readonly string _paramName;
         private readonly string _paramValue;
         public int Order => 999;
 
-        public RouteParamActionConstraint(string name, string value)
+        public QueryValueActionConstraint(string name, string value)
         {
             _paramName = name.Trim();
             _paramValue = value.Trim().ToLower(System.Globalization.CultureInfo.CurrentCulture);
