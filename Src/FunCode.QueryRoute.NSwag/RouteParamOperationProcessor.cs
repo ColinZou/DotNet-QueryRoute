@@ -27,6 +27,11 @@ namespace FunCode.QueryRoute.NSwag
             {
                 return true;
             }
+            string routePath = context.OperationDescription.Path;
+            string pendingPart = string.Join(_andSign, parameters.Select(item => $"{item.Key}={item.Value}"));
+            if (routePath.Contains(pendingPart)) {
+                return true;
+            }
             // getting all route param names as list
             List<string> paramNameList = parameters.Select(item => item.Key).ToList();
             // getting all query params bind to openapi operation
@@ -39,11 +44,11 @@ namespace FunCode.QueryRoute.NSwag
                 .Where(item => paramNameList.Contains(item.Name))
                 .ToList()
                 .ForEach(item => apiParams.Remove(item));
-            bool pathHasQuestionMark = context.OperationDescription.Path.Contains(_questioMark);
+            bool pathHasQuestionMark = routePath.Contains(_questioMark);
             // add query string to path
             context.OperationDescription.Path +=
                 (pathHasQuestionMark ? _andSign : _questioMark)
-                + string.Join(_andSign, parameters.Select(item => $"{item.Key}={item.Value}"));
+                + pendingPart;
             return true;
         }
     }
